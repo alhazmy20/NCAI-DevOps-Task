@@ -9,5 +9,11 @@ pipeline{
                 checkout scm
             }
         }
+        stage('Building Frontend'){
+            steps{
+                docker.build("${repo}/frontend")
+                sh "docker images"
+            }
+        }
     }
 }
