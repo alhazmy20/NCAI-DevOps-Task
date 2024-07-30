@@ -13,7 +13,7 @@ pipeline{
                 sh "docker images"
             }
         }
-           stage('Building Frontend'){
+           stage('Building Backend'){
             steps{
                 script{
                   docker.build("go-backend","./backend")
