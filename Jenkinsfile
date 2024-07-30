@@ -11,6 +11,7 @@ pipeline{
         }
         stage('Building Frontend'){
             steps{
+                sh "ls"
                 script{
                   docker.build("${repo}/frontend")
                 }
