@@ -13,6 +13,7 @@ pipeline{
                 sh "docker images"
             }
         }
+        
            stage('Building Backend'){
             steps{
                 script{
