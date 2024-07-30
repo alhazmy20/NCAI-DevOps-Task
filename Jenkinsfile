@@ -1,15 +1,9 @@
 pipeline{
     agent any
-    environment {
-        repo = 'alhazmy20/NCAI-DevOps-Task'
-        tag = 'latest'
+    triggers {
+        githubPush()
     }
     stages{
-        stage('Cloning'){
-            steps{
-                checkout scm
-            }
-        }
         stage('Building Frontend'){
             steps{
                 sh "ls"
@@ -17,6 +11,13 @@ pipeline{
                   docker.build("nginx-frontend","./frontend")
                 }
                 sh "docker images"
+            }
+        }
+           stage('Building Frontend'){
+            steps{
+                script{
+                  docker.build("go-backend","./backend")
+                }
             }
         }
     }
