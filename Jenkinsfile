@@ -4,6 +4,11 @@ pipeline{
      githubPush()
   }
     stages{
+        stage('Cloning'){
+            steps{
+                checkout scm
+            }
+        }
         stage('Building Frontend'){
             steps{
                 sh "ls"
