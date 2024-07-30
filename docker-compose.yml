@@ -1,0 +1,45 @@
+version: '3'
+services:
+  db:
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-vol:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=testDB
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test123
+    networks:
+      - test-net
+    container_name: db
+
+  backend:
+    # build:
+    # context: ./backend
+    # dockerfile: Dockerfile
+    image: go-backend
+    ports:
+      - 8080:8080
+    env_file:
+      - ./backend/.env
+    networks:
+      - test-net
+    depends_on:
+      - db
+    container_name: backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    networks:
+      - test-net
+    container_name: frontend
+
+volumes:
+  postgres-vol:
+networks:
+  test-net:
