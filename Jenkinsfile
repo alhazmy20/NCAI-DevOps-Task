@@ -33,16 +33,17 @@ pipeline {
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                         ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${env.BACKEND_IMAGE_NAME}
                     """
+
                 }
-                // sh 'docker rmi $SCANNER_IMAGE'
+                    // sh 'docker rmi $SCANNER_IMAGE'
             }
         }
-        stage('Pushing image to ACR') {
+        stage('Pushing image to ACR'){
             steps {
-                withCredentials([azureServicePrincipal('MyAzureCreds')]) {
-                    sh 'az acr login --name devncai'
-                    sh 'docker push devncai.azurecr.io/aalhazmi-backend:v1.0'
-                }
+                withCredentials([usernamePassword(credentialsId: 'AzureCredential', passwordVariable: 'AZURE_CLIENT_SECRET', usernameVariable: 'AZURE_CLIENT_ID')]) {
+                            sh 'docker login devncai.azurecr.io -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET'
+                            sh 'docker push devncai.azurecr.io/aalhazmi-backend:v1.0'
+                        }
             }
         }
     }
