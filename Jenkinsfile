@@ -35,11 +35,11 @@ pipeline {
         //             """
 
         //         }
-        //             sh 'docker rmi $SCANNER_IMAGE'
         //     }
         // }
         stage('Pushing image to ACR'){
             steps {
+                sh 'docker tag $BACKEND_IMAGE_NAME devncai.azurecr.io/aalhazmi-go-backend'
                 script {
                     docker.withRegistry('https://devncai.azurecr.io','AzureCredential'){
                         docker.image('devncai.azurecr.io/aalhazmi-go-backend').push()
@@ -50,7 +50,7 @@ pipeline {
         }
         // stage('Cleaning'){
         //     steps{
-
+                
         //     }
         // }
     }
