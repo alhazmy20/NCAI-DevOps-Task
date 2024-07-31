@@ -5,7 +5,7 @@ pipeline {
         BACKEND_IMAGE_NAME = 'go-backend'
         SCANNER_IMAGE = 'aquasec/trivy:latest'
         // Azure Credentials
-        AZURE_SUBSCRIPTION_ID = credentials('azure_subscription_id')
+        // AZURE_SUBSCRIPTION_ID = credentials('azure_subscription_id')
         AZURE_TENANT_ID = credentials('azure_tenant_id')
         CONTAINER_REGISTRY = 'devncai'
         RESOURCE_GROUP = 'NE-Dev-Apps'
