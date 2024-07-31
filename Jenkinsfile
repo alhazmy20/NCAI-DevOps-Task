@@ -42,12 +42,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'AzureCredential', passwordVariable: 'AZURE_CLIENT_SECRET', usernameVariable: 'AZURE_CLIENT_ID')]) {
                     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                    // sh 'az acr login --name $CONTAINER_REGISTRY --resource-group $RESOURCE_GROUP'
-                    // sh 'docker tag $BACKEND_IMAGE_NAME devncai.azurecr.io/aalhazmi-go-backend'
-                    // sh 'docker push devncai.azurecr.io/aalhazmi-go-backend'
                     script {
-                        docker.withRegistry('https://devncai.azurecr.io','AzureCredential').{
-                            docker.image('devncai.azurecr.io/aalhazmi-go-backend')
+                        docker.withRegistry('devncai.azurecr.io','AzureCredential').{
+                            docker.image('devncai.azurecr.io/aalhazmi-go-backend').push()
                         }
                     }
                  }
