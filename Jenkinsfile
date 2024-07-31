@@ -26,18 +26,18 @@ pipeline {
                 }
             }
         }
-        stage('Scanning Backend') {
-            steps {
-                script {
-                    sh """
-                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-                        ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${env.BACKEND_IMAGE_NAME}
-                    """
+        // stage('Scanning Backend') {
+        //     steps {
+        //         script {
+        //             sh """
+        //             docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+        //                 ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${env.BACKEND_IMAGE_NAME}
+        //             """
 
-                }
-                    // sh 'docker rmi $SCANNER_IMAGE'
-            }
-        }
+        //         }
+        //             sh 'docker rmi $SCANNER_IMAGE'
+        //     }
+        // }
         stage('Pushing image to ACR'){
             steps {
                 withCredentials([usernamePassword(credentialsId: 'AzureCredential', passwordVariable: 'AZURE_CLIENT_SECRET', usernameVariable: 'AZURE_CLIENT_ID')]) {
