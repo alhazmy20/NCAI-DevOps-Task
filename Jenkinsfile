@@ -28,11 +28,7 @@ pipeline {
         }
         stage('Scanning Backend') {
             steps {
-                script {
-                    docker.image(env.SCANNER_IMAGE).inside {
-                        // sh 'trivy --exit-code 1 --severity HIGH,CRITICAL $BACKEND_IMAGE_NAME'
-                    }
-                }
+                    sh 'docker docker run --rm -q -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $BACKEND_IMAGE_NAME'
                     sh 'docker rmi $SCANNER_IMAGE'
             }
         }
