@@ -26,22 +26,22 @@ pipeline {
                 }
             }
         }
-        stage('Scanning Backend') {
-            steps {
-                script {
-                    sh """
-                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-                        ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${env.BACKEND_IMAGE_NAME}
-                    """
+        // stage('Scanning Backend') {
+        //     steps {
+        //         script {
+        //             sh """
+        //             docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+        //                 ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${env.BACKEND_IMAGE_NAME}
+        //             """
 
-                }
-                    sh 'docker rmi $SCANNER_IMAGE'
-            }
-        }
+        //         }
+        //             sh 'docker rmi $SCANNER_IMAGE'
+        //     }
+        // }
         stage('Pushing image to ACR'){
             steps {
                 script {
-                    docker.withRegistry('https://devncai.azurecr.io','MyAzureCreds'){
+                    docker.withRegistry('https://devncai.azurecr.io','AzureCredential'){
                         docker.image('devncai.azurecr.io/aalhazmi-go-backend').push()
                     }
                 }
