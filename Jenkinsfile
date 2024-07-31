@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         FRONTEND_IMAGE_NAME = 'nginx-frontend'
-        BACKEND_IMAGE_NAME = 'aalhazmi-go-backend'
+        BACKEND_IMAGE_NAME = 'go-backend'
         SCANNER_IMAGE = 'aquasec/trivy:latest'
         // Azure Credentials
         AZURE_SUBSCRIPTION_ID = credentials('azure_subscription_id')
@@ -43,6 +43,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'AzureCredential', passwordVariable: 'AZURE_CLIENT_SECRET', usernameVariable: 'AZURE_CLIENT_ID')]) {
                     sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
                     sh 'az acr login --name $CONTAINER_REGISTRY --resource-group $RESOURCE_GROUP'
+                    sh 'docker tag $BACKEND_IMAGE_NAME devncai.azurecr.io/aalhazmi-go-backend'
                     sh 'docker push devncai.azurecr.io/$BACKEND_IMAGE_NAME'
                  }
             }
