@@ -41,7 +41,8 @@ pipeline {
         stage('Pushing image to ACR'){
             steps {
                 withCredentials([usernamePassword(credentialsId: 'AzureCredential', passwordVariable: 'AZURE_CLIENT_SECRET', usernameVariable: 'AZURE_CLIENT_ID')]) {
-                            sh 'docker login devncai.azurecr.io -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET'
+                            sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID'
+                            sh 'az acr login --name $CONTAINER_REGISTRY'
                             sh 'docker push devncai.azurecr.io/aalhazmi-backend:v1.0'
                         }
             }
