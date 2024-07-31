@@ -26,6 +26,15 @@ pipeline {
                 }
             }
         }
+        stage('Testing Backend'){
+            steps{
+                script{
+                    dockerImage.inside{
+                        sh 'echo Hello World'
+                    }
+                }
+            }
+        }
         // stage('Scanning Backend') {
         //     steps {
         //         script {
