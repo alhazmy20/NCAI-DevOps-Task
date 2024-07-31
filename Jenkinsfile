@@ -1,23 +1,22 @@
 pipeline{
     agent any
-    triggers {
-     githubPush()
-  }
+    environment{
+        frontendImage = 'nginx-frontend'
+        backendImage = 'go-backend'
+    }
     stages{
         stage('Building Frontend'){
             steps{
-                sh "ls"
                 script{
-                  docker.build("nginx-frontend","./frontend")
+                  docker.build(env.frontendImage,"./frontend")
                 }
-                sh "docker images"
             }
         }
 
            stage('Building Backend'){
             steps{
                 script{
-                  docker.build("go-backend","./backend")
+                  docker.build(env.frontendImage,"./backend")
                 }
             }
         }
