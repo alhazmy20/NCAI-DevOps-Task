@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                     docker.image(env.SCANNER_IMAGE).inside {
-                         sh trivy image --exit-code 1 --severity HIGH,CRITICAL $BACKEND_IMAGE_NAME
+                         sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL $BACKEND_IMAGE_NAME'
                     }
                 }
                     sh 'docker rmi $SCANNER_IMAGE'
