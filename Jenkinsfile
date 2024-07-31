@@ -29,7 +29,7 @@ pipeline {
         stage('Testing Backend'){
             steps{
                 script{
-                    dockerImage.inside{
+                    docker.image(env.BACKEND_IMAGE_NAME).inside{
                         sh 'echo Hello World'
                     }
                 }
