@@ -26,28 +26,26 @@ pipeline {
                 }
             }
         }
-        // stage('Scanning Backend') {
-        //     steps {
-        //         script {
-        //             sh """
-        //             docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-        //                 ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${env.BACKEND_IMAGE_NAME}
-        //             """
+        stage('Scanning Backend') {
+            steps {
+                script {
+                    sh """
+                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                        ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${env.BACKEND_IMAGE_NAME}
+                    """
 
-        //         }
-        //             sh 'docker rmi $SCANNER_IMAGE'
-        //     }
-        // }
+                }
+                    sh 'docker rmi $SCANNER_IMAGE'
+            }
+        }
         stage('Pushing image to ACR'){
             steps {
-                withCredentials([usernamePassword(credentialsId: 'AzureCredential')]) {
-                    // sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID'
-                    script {
-                        docker.withRegistry('https://devncai.azurecr.io','AzureCredential'){
-                            docker.image('devncai.azurecr.io/aalhazmi-go-backend').push()
-                        }
+                script {
+                    docker.withRegistry('https://devncai.azurecr.io','AzureCredential'){
+                        docker.image('devncai.azurecr.io/aalhazmi-go-backend').push()
                     }
-                 }
+                }
+                 
             }
         }
         // stage('Cleaning'){
