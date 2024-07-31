@@ -29,11 +29,15 @@ pipeline {
         stage('Scanning Backend') {
             steps {
                 script {
-                    docker.image(env.SCANNER_IMAGE).inside {
-                         sh 'image --exit-code 1 --severity HIGH,CRITICAL $BACKEND_IMAGE_NAME'
+                   docker.image(env.scannerImage).inside {
+                        sh '
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                            $SCANNER_IMAGE image --exit-code 1 --severity HIGH,CRITICAL $BACKEND_IMAGE_NAME
+                        '
                     }
+
                 }
-                    sh 'docker rmi $SCANNER_IMAGE'
+                    // sh 'docker rmi $SCANNER_IMAGE'
             }
         }
         stage('Pushing image to ACR'){
