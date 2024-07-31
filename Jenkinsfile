@@ -28,8 +28,8 @@ pipeline {
         }
         stage('Scanning Backend') {
             steps {
-                    sh 'docker docker run -q -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $BACKEND_IMAGE_NAME'
-                    sh 'docker rmi $SCANNER_IMAGE'
+                    sh 'docker run --rm -q -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $BACKEND_IMAGE_NAME'
+                    // sh 'docker rmi $SCANNER_IMAGE'
             }
         }
         stage('Pushing image to ACR'){
