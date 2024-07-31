@@ -46,7 +46,7 @@ pipeline {
                     // sh 'docker tag $BACKEND_IMAGE_NAME devncai.azurecr.io/aalhazmi-go-backend'
                     // sh 'docker push devncai.azurecr.io/aalhazmi-go-backend'
                     script {
-                        docker.withRegistry('$CONTAINER_REGISTRY.azurecr.io').{
+                        docker.withRegistry('$CONTAINER_REGISTRY.azurecr.io','AzureCredential').{
                             docker.image('$CONTAINER_REGISTRY.azurecr.io/aalhazmi-go-backend')
                         }
                     }
