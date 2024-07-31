@@ -41,7 +41,7 @@ pipeline {
         stage('Pushing image to ACR'){
             steps {
                 script {
-                    docker.withRegistry('https://devncai.azurecr.io','AzureCredential'){
+                    docker.withRegistry('https://devncai.azurecr.io','MyAzureCreds'){
                         docker.image('devncai.azurecr.io/aalhazmi-go-backend').push()
                     }
                 }
