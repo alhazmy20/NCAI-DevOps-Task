@@ -28,7 +28,7 @@ pipeline {
         }
         stage('Scanning Backend') {
             steps {
-                    sh 'docker docker run --rm -q -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $BACKEND_IMAGE_NAME'
+                    sh 'docker docker run -q -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $BACKEND_IMAGE_NAME'
                     sh 'docker rmi $SCANNER_IMAGE'
             }
         }
