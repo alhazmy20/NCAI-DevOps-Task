@@ -1,15 +1,9 @@
 pipeline {
     agent any
     environment {
-        FRONTEND_IMAGE_NAME = 'nginx-frontend'
-        BACKEND_IMAGE_NAME = 'go-backend'
+        FRONTEND_IMAGE_NAME = 'aalhazmi-frontend'
+        BACKEND_IMAGE_NAME = 'aalhazmi-backend'
         SCANNER_IMAGE = 'aquasec/trivy:latest'
-        // Azure Credentials
-        // AZURE_SUBSCRIPTION_ID = credentials('azure_subscription_id')
-        AZURE_TENANT_ID = credentials('azure_tenant_id')
-        CONTAINER_REGISTRY = 'devncai'
-        RESOURCE_GROUP = 'NE-Dev-Apps'
-        REPO = 'aalhazmi-repo'      
     }
     stages {
         stage('Building Frontend') {
@@ -26,41 +20,38 @@ pipeline {
                 }
             }
         }
-        stage('Testing Backend'){
-            steps{
-                script{
-                    docker.image(env.BACKEND_IMAGE_NAME).inside("--entrypoint=./app"){
-                        sh 'echo Hello World'
-                    }
-                }
-            }
-        }
-        // stage('Scanning Backend') {
-        //     steps {
-        //         script {
-        //             sh """
-        //             docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-        //                 ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${env.BACKEND_IMAGE_NAME}
-        //             """
-
-        //         }
-        //     }
-        // }
-        stage('Pushing image to ACR'){
+        stage('Scanning Images') {
             steps {
-                sh 'docker tag $BACKEND_IMAGE_NAME devncai.azurecr.io/aalhazmi-go-backend'
                 script {
-                    docker.withRegistry('https://devncai.azurecr.io','AzureCredential'){
-                        docker.image('devncai.azurecr.io/aalhazmi-go-backend').push()
-                    }
+                    sh """
+                    for image in ${env.BACKEND_IMAGE_NAME} ${env.FRONTEND_IMAGE_NAME};
+                    do docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                        ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL $image;
+                        done;
+                    """
+
                 }
-                 
             }
         }
-        // stage('Cleaning'){
-        //     steps{
-                
+        // stage('Pushing images to ACR'){
+        //     steps {
+        //         script {ali
+        //             docker.withRegistry('https://devncai.azurecr.io','AzureCredential'){
+        //                 docker.image(env.BACKEND_IMAGE_NAME).push()
+        //                 docker.image(env.FRONTEND_IMAGE_NAME).push()
+        //             }
+        //         }
+                 
         //     }
         // }
+        stage('Cleaning'){
+            steps{
+                sh """
+                for image in ${env.BACKEND_IMAGE_NAME} ${env.FRONTEND_IMAGE_NAME};
+                do docker rmi $image;
+                done;
+                """
+            }
+        }
     }
 }
