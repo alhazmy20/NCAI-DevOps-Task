@@ -29,12 +29,12 @@ pipeline {
                     //     ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${image};
                     //     done;
                     // """:
-                    sh """
-for image in ${env.BACKEND_IMAGE_NAME} ${env.FRONTEND_IMAGE_NAME}; do
+                    sh '''
+for image in $BACKEND_IMAGE_NAME $FRONTEND_IMAGE_NAME; do
   docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL "$image";
+  $SCANNER_IMAGE image --exit-code 1 --severity HIGH,CRITICAL "$image";
 done
-"""
+'''
 
                 }
             }
