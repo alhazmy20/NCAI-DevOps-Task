@@ -20,43 +20,35 @@ pipeline {
                 }
             }
         }
-        stage('Scanning Images') {
+        // stage('Scanning Images') {
+        //     steps {
+        //         script {
+        //             sh '''
+        //             for image in $BACKEND_IMAGE_NAME $FRONTEND_IMAGE_NAME; 
+        //                 do docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+        //                 $SCANNER_IMAGE image --exit-code 1 --severity HIGH,CRITICAL "$image";
+        //             done
+        //             '''
+        //         }
+        //     }
+        // }
+        stage('Pushing images to ACR') {
             steps {
                 script {
-                    // sh """
-                    // for image in ${env.BACKEND_IMAGE_NAME} ${env.FRONTEND_IMAGE_NAME};
-                    // do docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-                    //     ${env.SCANNER_IMAGE} image --exit-code 1 --severity HIGH,CRITICAL ${image};
-                    //     done;
-                    // """:
-                    sh '''
-for image in $BACKEND_IMAGE_NAME $FRONTEND_IMAGE_NAME; do
-  docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  $SCANNER_IMAGE image --exit-code 1 --severity HIGH,CRITICAL "$image";
-done
-'''
-
+                    docker.withRegistry('https://devncai.azurecr.io', 'AzureCredential') {
+                        docker.image(env.BACKEND_IMAGE_NAME).push()
+                        docker.image(env.FRONTEND_IMAGE_NAME).push()
+                    }
                 }
             }
         }
-        // stage('Pushing images to ACR'){
-        //     steps {
-        //         script {ali
-        //             docker.withRegistry('https://devncai.azurecr.io','AzureCredential'){
-        //                 docker.image(env.BACKEND_IMAGE_NAME).push()
-        //                 docker.image(env.FRONTEND_IMAGE_NAME).push()
-        //             }
-        //         }
-                 
-        //     }
-        // }
-        stage('Cleaning'){
-            steps{
-                sh """
-                for image in ${env.BACKEND_IMAGE_NAME} ${env.FRONTEND_IMAGE_NAME};
-                do docker rmi ${image};
+        stage('Cleaning') {
+            steps {
+                sh '''
+                for image in $BACKEND_IMAGE_NAME $FRONTEND_IMAGE_NAME
+                do docker rmi "$image";
                 done;
-                """
+                '''
             }
         }
     }
