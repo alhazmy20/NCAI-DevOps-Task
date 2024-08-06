@@ -1,25 +1,13 @@
 #imported resource
-resource "azurerm_virtual_network" "NE-Dev-Network" {
+data "azurerm_virtual_network" "NE-Dev-vNet-01" {
   name                = "NE-Dev-vNet-01"
-  location            = "northeurope"
   resource_group_name = "NE-Dev-Network"
-  address_space       = ["192.168.0.0/16"]
-  tags = {
-    created-by      = "aalhazmi"
-    requested-by    = "salajlan"
-    created-email   = "aalhazmi@ncai2.onmicrosoft.com"
-    team            = "DevOps"
-    created-at      = "2024-07-29"
-    requested-email = "salajlan@nic.gov.sa"
-  }
 }
-
-#imported resource
-resource "azurerm_subnet" "aks-dev-subnet" {
+ 
+data "azurerm_subnet" "aks-dev-subnet" {
   name                 = "aks-dev-subnet"
+  virtual_network_name = "NE-Dev-vNet-01"
   resource_group_name  = "NE-Dev-Network"
-  address_prefixes     = ["192.168.100.0/24"]
-  virtual_network_name = azurerm_virtual_network.NE-Dev-Network.name
 }
 
 resource "azurerm_resource_group" "tf-rg" {
@@ -34,7 +22,7 @@ resource "azurerm_network_interface" "tf-nic" {
   resource_group_name = azurerm_resource_group.tf-rg.name
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.aks-dev-subnet.id
+    subnet_id                     = data.azurerm_subnet.aks-dev-subnet.id
     private_ip_address_allocation = "Static"
     private_ip_address            = "192.168.100.11"
   }
