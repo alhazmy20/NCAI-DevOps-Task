@@ -76,33 +76,3 @@ resource "azurerm_linux_virtual_machine" "tf-vm" {
     azurerm_network_interface.tf-nic
   ]
 }
-
-resource "azurerm_network_security_group" "tf-sg" {
-  name                = "aalhazmi-sg"
-  location            = azurerm_resource_group.tf-rg.location
-  resource_group_name = azurerm_resource_group.tf-rg.name
-  security_rule {
-    name                       = "vm-sg"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "22"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-  tags = {
-    created-by      = "aalhazmi"
-    requested-by    = "salajlan"
-    created-email   = "aalhazmi@ncai2.onmicrosoft.com"
-    team            = "DevOps"
-    created-at      = "2024-07-29"
-    requested-email = "salajlan@nic.gov.sa"
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "tf-sga" {
-  network_interface_id      = azurerm_network_interface.tf-nic.id
-  network_security_group_id = azurerm_network_security_group.tf-sg.id
-}
