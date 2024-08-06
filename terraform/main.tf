@@ -45,8 +45,6 @@ resource "azurerm_linux_virtual_machine" "tf-vm" {
   location            = azurerm_resource_group.tf-rg.location
   size                = "Standard_D2s_v3"
   admin_username      = "adminuser"
-  #admin_password                  = "Pass123456789@"
-  #disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.tf-nic.id,
   ]
